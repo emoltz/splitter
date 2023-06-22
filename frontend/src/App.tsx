@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {Context, createContext, useState} from "react";
+import HomePage from "./components/HomePage.tsx";
+// import NavBar from "./components/NavBar";
+import NavBarMUI from "./components/NavBarMUI.tsx";
+import {createTheme, ThemeProvider} from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import {LocalizationProvider} from '@mui/x-date-pickers';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+
+
+export const DarkModeContext: Context<any> = createContext(false);
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [darkMode, setDarkMode] = useState(false);
+    const theme = createTheme({
+        palette: {
+            mode: darkMode ? 'dark' : 'light',
+            primary: {
+                main: "#3767af",
+            },
+            secondary: {
+                main: '#fffbad'
+            }
+        }
+    });
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const handleDarkModeToggle = (): void => {
+        setDarkMode(!darkMode);
+    }
+
+    return (
+        <>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+                <ThemeProvider theme={theme}>
+                    <CssBaseline>
+                        <DarkModeContext.Provider value={{darkMode, handleDarkModeToggle}}>
+
+                            {/*<NavBar/>*/}
+                            <NavBarMUI/>
+                            <div className="d-flex flex-column p-4 gap-4 py-md-5">
+                                <HomePage/>
+                            </div>
+                        </DarkModeContext.Provider>
+                    </CssBaseline>
+                </ThemeProvider>
+            </LocalizationProvider>
+        </>
+    );
 }
 
-export default App
+export default App;
