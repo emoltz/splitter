@@ -37,6 +37,7 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
     return (
         <Modal
             scroll
+            width={"800px"}
             fullScreen={isMobile}
             closeButton
             aria-labelledby={"modal-title"}
