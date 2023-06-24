@@ -1,8 +1,9 @@
 import {Modal,} from '@nextui-org/react';
 import {Button, Typography} from '@mui/material';
+import {bill} from "../../assets/interfaces.tsx";
 
 interface Props {
-    bill: { id: number; title: string; date: string; total: number };
+    bill: bill;
     setVisible: (visible:boolean) => void;
     bindings: any;
     isMobile: boolean;
