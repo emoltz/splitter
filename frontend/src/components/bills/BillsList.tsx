@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
-import {archiveBill, getBills} from "../api/billService.tsx";
-import NewBillForm from "./NewBillForm.tsx";
+import {archiveBill, getBills} from "../../api/billService.tsx";
+import NewBillForm from "../bills/NewBillForm.tsx";
 import BillRow from "./BillRow.tsx";
-import BillDetail from "./BillDetail.tsx";
+import BillDetail from "../bills/BillDetail.tsx";
 // MUI
 import {Button, useMediaQuery, useTheme} from "@mui/material";
 import '@fontsource/roboto/300.css';

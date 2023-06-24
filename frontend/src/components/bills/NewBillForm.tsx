@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {NewBillRequest, saveBill} from "../api/billService.tsx";
+import {NewBillRequest, saveBill} from "../../api/billService.tsx";
 import {Button, TextField} from "@mui/material";
 import {DatePicker} from "@mui/x-date-pickers";
 import {Dayjs} from 'dayjs';
