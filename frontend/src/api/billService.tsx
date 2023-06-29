@@ -1,8 +1,10 @@
 import axios from "axios";
 import configLoader from "../config/configLoader.ts";
+// import {Item} from "../assets/interfaces.tsx";
 
 let apiBaseUrl = configLoader.apiUrl;
 let endpoint = "bill";
+let itemsEndpoint = "items";
 
 console.log(process.env.NODE_ENV);
 
@@ -32,6 +34,7 @@ export const archiveBill = async (billId: number) => {
 }
 
 export class NewBillRequest {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     private title: string;
     // @ts-ignore
@@ -45,5 +48,21 @@ export class NewBillRequest {
         this.title = title;
         this.date = date;
         this.total = 0;
+    }
+}
+
+export const getItemsByBillId = async (billId: number) => {
+    try {
+        return await axios.get(`${apiBaseUrl}${itemsEndpoint}/bill/${billId}`);
+    } catch (e) {
+        throw(e);
+    }
+}
+
+export const createItem = async (item: any) => {
+    try {
+        return await axios.post(`${apiBaseUrl}${itemsEndpoint}`, item);
+    } catch (e) {
+        throw e;
     }
 }
