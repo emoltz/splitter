@@ -2,7 +2,6 @@ import {Modal,} from '@nextui-org/react';
 import {Button, TextField, Typography} from '@mui/material';
 import {bill} from "../../assets/interfaces.tsx";
 import {useEffect, useState} from "react";
-import axios from "axios";
 import {getItemsByBillId, createItem} from "../../api/billService.tsx";
 
 interface Props {

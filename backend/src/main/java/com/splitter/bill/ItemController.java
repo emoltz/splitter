@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/items")
+@RequestMapping("/api/v1/splitter/items")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ItemController {
 
