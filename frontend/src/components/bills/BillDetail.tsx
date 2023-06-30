@@ -118,6 +118,7 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                         value={newItem.quantity}
                         onChange={(event) => handleItemChange('quantity', Number(event.target.value))}
                     />
+                    <div className={"underline"}>Hello</div>
                 </div>
                 <Button onClick={handleAddNewItem}>Add Item</Button>
             </Modal.Body>

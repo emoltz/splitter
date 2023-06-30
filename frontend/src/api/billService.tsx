@@ -2,9 +2,9 @@ import axios from "axios";
 import configLoader from "../config/configLoader.ts";
 // import {Item} from "../assets/interfaces.tsx";
 
-let apiBaseUrl = configLoader.apiUrl;
-let endpoint = "bill";
-let itemsEndpoint = "items";
+const apiBaseUrl = configLoader.apiUrl;
+const endpoint = "bill";
+const itemsEndpoint = "items";
 
 console.log(process.env.NODE_ENV);
 

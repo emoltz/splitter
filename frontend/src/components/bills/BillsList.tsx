@@ -11,6 +11,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import {useModal} from "@nextui-org/react";
 import {bill} from "../../assets/interfaces.tsx"
+import "../../App.css";
 
 function BillsList() {
     const [bills, setBills] = useState<bill[]>([]);
