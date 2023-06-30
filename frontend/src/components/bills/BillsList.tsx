@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
-import {archiveBill, getBills} from "../api/billService.tsx";
-import NewBillForm from "./NewBillForm.tsx";
+import {archiveBill, getBills} from "../../api/billService.tsx";
+import NewBillForm from "../bills/NewBillForm.tsx";
 import BillRow from "./BillRow.tsx";
-import BillDetail from "./BillDetail.tsx";
+import BillDetail from "../bills/BillDetail.tsx";
 // MUI
 import {Button, useMediaQuery, useTheme} from "@mui/material";
 import '@fontsource/roboto/300.css';
@@ -10,11 +10,13 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import {useModal} from "@nextui-org/react";
+import {bill} from "../../assets/interfaces.tsx"
+import "../../App.css";
 
 function BillsList() {
-    const [bills, setBills] = useState<any[]>([]);
+    const [bills, setBills] = useState<bill[]>([]);
     const [formVisible, setFormVisible] = useState(false);
-    const [selectedBill, setSelectedBill] = useState<any>(null);
+    const [selectedBill, setSelectedBill] = useState<bill>();
     const {setVisible, bindings} = useModal();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -45,16 +47,14 @@ function BillsList() {
 
     }
 
-    const handleBillClick = (bill: any) => {
+    const handleBillClick = (bill: bill) => {
         setSelectedBill(bill);
         setVisible(true);
     }
 
-
     return (
         <>
             <div className="d-flex">
-
                 <h1>My Bills</h1> &nbsp;
 
                 <Button
@@ -79,7 +79,6 @@ function BillsList() {
                 </Button>
 
             </div>
-
 
             {formVisible && (
                 <NewBillForm

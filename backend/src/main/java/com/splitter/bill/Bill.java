@@ -2,6 +2,7 @@ package com.splitter.bill;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import java.util.List;
 
 import java.util.Date;
 import java.util.Objects;
@@ -25,6 +26,9 @@ public class Bill {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date date;
+
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> items;
 
     public Bill(Integer id, String title, Date date, double total) {
         this.id = id;
