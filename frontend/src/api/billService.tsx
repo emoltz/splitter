@@ -6,8 +6,6 @@ const apiBaseUrl = configLoader.apiUrl;
 const endpoint = "bill";
 const itemsEndpoint = "items";
 
-console.log(process.env.NODE_ENV);
-
 export const getBills = async () => {
     try {
         return await axios.get(apiBaseUrl + endpoint);
