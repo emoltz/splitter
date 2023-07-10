@@ -1,5 +1,4 @@
-name: Splitter CI
-
+name: Test
 on:
   push:
     branches:
