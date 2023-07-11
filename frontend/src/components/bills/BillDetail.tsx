@@ -1,8 +1,8 @@
-import {Modal,} from '@nextui-org/react';
+import {Modal} from '@nextui-org/react';
 import {Button, TextField, Typography} from '@mui/material';
-import {bill} from "../../assets/interfaces.tsx";
+import {bill} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
-import {getItemsByBillId, createItem} from "../../api/billService.tsx";
+import {getItemsByBillId, createItem} from "../../api/billService.js";
 
 interface Props {
     bill: bill;
@@ -118,7 +118,6 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                         value={newItem.quantity}
                         onChange={(event) => handleItemChange('quantity', Number(event.target.value))}
                     />
-                    <div className={"underline"}>Hello</div>
                 </div>
                 <Button onClick={handleAddNewItem}>Add Item</Button>
             </Modal.Body>
