@@ -4,7 +4,7 @@ const NavBar = () => {
       <div className="container-fluid">
         <a className="navbar-brand fs-1">
           <img
-            src="../src/assets/split_logo.png"
+            src="/split_logo.png"
             alt="Logo"
             width="50"
             height="50"
