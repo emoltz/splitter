@@ -2,6 +2,9 @@ package com.splitter.bill;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -11,11 +14,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
+@ExtendWith(MockitoExtension.class)
 public class BillServiceTest {
 
     private BillService billService;
 
-    @Autowired
+    @Mock
     private BillRepository billRepository;
 
     @BeforeEach
