@@ -1,6 +1,7 @@
 import {JSX} from "react";
 import {Image, Link, Navbar, Spacer, Text} from "@nextui-org/react";
-import {Button} from "@mui/material";
+import {Button, CircularProgress} from "@mui/material";
+import {useCurrentUser} from "../../lib/hooks.ts";
 
 // import DarkModeToggle from "./DarkModeToggle.tsx";
 
@@ -14,6 +15,7 @@ class Page{
 }
 
 export default function NavBarMUI(): JSX.Element {
+    const {user, loading} = useCurrentUser();
     const pages: Page[] = [
         // ADD NEW ROUTES HERE
         new Page("Home", "/"),
@@ -37,11 +39,25 @@ export default function NavBarMUI(): JSX.Element {
                 <Text i>the bill splitting app</Text>
             </Navbar.Brand>
             <Navbar.Content enableCursorHighlight hideIn={"sm"} variant={"underline"}>
+                {!user &&
+
                 <Button
                     variant={"outlined"}
+                    disabled={loading}
+                    startIcon={loading && <CircularProgress size={20}/>}
                 >
                     Login
                 </Button>
+                }
+                {user &&
+                <Button
+                    variant={"outlined"}
+                    >
+                    My Profile
+                </Button>
+
+                }
+
 
             </Navbar.Content>
             <Navbar.Collapse>

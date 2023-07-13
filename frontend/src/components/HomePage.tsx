@@ -1,18 +1,33 @@
 import BillsList from "./bills/BillsList.tsx";
 import {Container} from '@nextui-org/react';
 import LoginScreen from "./LoginScreen.tsx";
-import {auth} from '../../lib/firebase'
-import {User} from "firebase/auth";
+import {Loading} from "@nextui-org/react";
+
+import {useCurrentUser} from "../../lib/hooks";
+
 
 function HomePage() {
-    const user: User | null = auth.currentUser;
+    const {user, loading} = useCurrentUser();
+    if (loading) {
+        return <Loading/>;
+    }
 
     return (
         <Container
             lg
         >
+            {!user &&
+
+                <LoginScreen/>
+
+            }
+            {user &&
+                <div>Signed in as {user?.displayName}</div>
+            }
+            <div className={"p-3"}/>
             <BillsList/>
-            <LoginScreen/>
+
+
         </Container>
     );
 }
