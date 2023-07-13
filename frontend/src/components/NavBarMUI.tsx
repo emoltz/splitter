@@ -1,7 +1,8 @@
 import {JSX} from "react";
 import {Image, Link, Navbar, Spacer, Text} from "@nextui-org/react";
 import {Button, CircularProgress} from "@mui/material";
-import {useCurrentUser} from "../../lib/hooks.ts";
+import {useCurrentUser} from "../../lib/hooks";
+
 
 // import DarkModeToggle from "./DarkModeToggle.tsx";
 
