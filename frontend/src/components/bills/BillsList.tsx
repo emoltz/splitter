@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
-import {archiveBill, getBills} from "../../api/billService.tsx";
-import NewBillForm from "../bills/NewBillForm.tsx";
-import BillRow from "./BillRow.tsx";
-import BillDetail from "../bills/BillDetail.tsx";
+import {archiveBill, getBills} from "../../api/billService";
+import NewBillForm from "../bills/NewBillForm";
+import BillRow from "./BillRow";
+import BillDetail from "../bills/BillDetail";
 // MUI
 import {Button, useMediaQuery, useTheme} from "@mui/material";
 import '@fontsource/roboto/300.css';
@@ -10,7 +10,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import {useModal} from "@nextui-org/react";
-import {bill} from "../../assets/interfaces.tsx"
+import {bill} from "../../assets/interfaces"
 import "../../App.css";
 
 function BillsList() {
@@ -56,27 +56,29 @@ function BillsList() {
         <>
             <div className="d-flex">
                 <h1>My Bills</h1> &nbsp;
+                <div>
 
-                <Button
-                    variant={"contained"}
-                    className="btn btn-outline-primary btn-lg"
-                    onClick={() => {
-                        setFormVisible(true);
-                    }}
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="currentColor"
-                        className="bi bi-plus"
-                        viewBox="0 0 16 16"
+                    <Button
+                        variant={"contained"}
+                        className="btn btn-outline-primary btn-lg"
+                        onClick={() => {
+                            setFormVisible(true);
+                        }}
                     >
-                        <path
-                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
-                    </svg>
-                    New
-                </Button>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="currentColor"
+                            className="bi bi-plus"
+                            viewBox="0 0 16 16"
+                        >
+                            <path
+                                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+                        </svg>
+                        New
+                    </Button>
+                </div>
 
             </div>
 
