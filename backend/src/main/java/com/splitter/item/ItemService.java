@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class ItemService {
         Item item = new Item();
         Optional<Bill> bill = billRepository.findById(newItemRequest.billId());
         if (bill.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Bill id %d not found", newItemRequest.billId()));
         }
         item.setBill(bill.get());
         item.setDescription(newItemRequest.description());
@@ -37,5 +38,25 @@ public class ItemService {
         item.setQuantity(newItemRequest.quantity());
         itemRepository.save(item);
         return new ResponseEntity<>(item, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<Item> updateItem(Integer id, NewItemRequest newItemRequest) {
+        Optional<Item> itemOptional = itemRepository.findById(id);
+        if (itemOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
+        }
+        Item item = itemOptional.get();
+        item.setDescription(newItemRequest.description());
+        item.setPrice(newItemRequest.price());
+        item.setQuantity(newItemRequest.quantity());
+        itemRepository.save(item);
+        return new ResponseEntity<>(item, HttpStatus.OK);
+    }
+
+    public void deleteItem(Integer id) {
+        if (itemRepository.findById(id).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
+        }
+        itemRepository.deleteById(id);
     }
 }

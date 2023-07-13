@@ -26,5 +26,13 @@ public class ItemController {
         return itemService.createItem(newItemRequest);
     }
 
-    // other mappings go below (PUT, DELETE, etc...
+    @PutMapping("/{itemId}")
+    public ResponseEntity<Item> updateItem(@PathVariable Integer itemId, @RequestBody NewItemRequest newItemRequest) {
+        return itemService.updateItem(itemId, newItemRequest);
+    }
+
+    @DeleteMapping("/{itemId}")
+    public void deleteItem(@PathVariable Integer itemId) {
+        itemService.deleteItem(itemId);
+    }
 }
