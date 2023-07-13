@@ -1,6 +1,6 @@
-import BillsList from "./bills/BillsList.tsx";
+import BillsList from "./bills/BillsList";
 import {Container} from '@nextui-org/react';
-import LoginScreen from "./LoginScreen.tsx";
+import LoginScreen from "./LoginScreen";
 import {Loading} from "@nextui-org/react";
 
 import {useCurrentUser} from "../../lib/hooks";
@@ -21,9 +21,7 @@ function HomePage() {
                 <LoginScreen/>
 
             }
-            {user &&
-                <div>Signed in as {user?.displayName}</div>
-            }
+
             <div className={"p-3"}/>
             <BillsList/>
 
