@@ -4,7 +4,6 @@ import com.splitter.bill.Bill;
 import com.splitter.bill.BillRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 

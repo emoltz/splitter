@@ -7,7 +7,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:5173", "https://www.splitterproject.com/"})
-@RequestMapping("/api/v1/splitter/bill/{billId}/item")
+@RequestMapping("api/v1/splitter/bill/{billId}/item")
 public class ItemController {
 
     private final ItemService itemService;
