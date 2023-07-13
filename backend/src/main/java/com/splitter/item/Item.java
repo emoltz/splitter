@@ -1,14 +1,23 @@
-package com.splitter.bill;
+package com.splitter.item;
+import com.splitter.bill.Bill;
 import jakarta.persistence.*;
 
 @Entity
 public class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(
+            name = "item_id_sequence",
+            sequenceName = "item_id_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "item_id_sequence"
+    )
     private Integer id;
     private String description;
     private double price;
-    private int quantity;
+    private Integer quantity;
 
     @ManyToOne
     @JoinColumn(name = "bill_id", nullable = false)
@@ -18,7 +27,7 @@ public class Item {
 
     }
 
-    public Item(Integer id, String description, double price, int quantity, Bill bill) {
+    public Item(Integer id, String description, double price, Integer quantity, Bill bill) {
         this.id = id;
         this.description = description;
         this.price = price;
@@ -36,7 +45,7 @@ public class Item {
     public void setPrice(double price) { this.price = price; }
 
     public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
 
     public Bill getBill() { return bill; }
     public void setBill(Bill bill) { this.bill = bill; }
