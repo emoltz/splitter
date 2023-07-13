@@ -1,5 +1,7 @@
 package com.splitter.bill;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -22,8 +24,7 @@ public class BillService {
         return billRepository.findByArchivedFalse();
     }
 
-    public void createBill(NewBillRequest newBillRequest) {
-        // add some validation
+    public ResponseEntity<Bill> createBill(NewBillRequest newBillRequest) {
         Bill bill = new Bill();
         bill.setTitle(newBillRequest.title());
         try {
@@ -33,7 +34,12 @@ public class BillService {
             bill.setDate(new Date());
         }
         bill.setTotal(newBillRequest.total());
-        billRepository.save(bill);
+        try {
+            billRepository.save(bill);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        return new ResponseEntity<>(bill, HttpStatus.CREATED);
     }
 
     public void archiveBill(Integer id) {

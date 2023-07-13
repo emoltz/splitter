@@ -1,11 +1,12 @@
 package com.splitter.bill;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"https://www.splitterproject.com/"})
+@CrossOrigin(origins = {"http://localhost:5173", "https://www.splitterproject.com/"})
 @RequestMapping("api/v1/splitter/bill")
 public class BillController {
 
@@ -21,8 +22,8 @@ public class BillController {
     }
 
     @PostMapping
-    public void createBill(@RequestBody NewBillRequest newBillRequest) {
-        billService.createBill(newBillRequest);
+    public ResponseEntity<Bill> createBill(@RequestBody NewBillRequest newBillRequest) {
+        return billService.createBill(newBillRequest);
     }
 
     @PutMapping(path = "{id}/archive")
