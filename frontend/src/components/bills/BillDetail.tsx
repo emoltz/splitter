@@ -2,7 +2,7 @@ import {Modal} from '@nextui-org/react';
 import {Button, TextField, Typography} from '@mui/material';
 import {bill} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
-import {getItemsByBillId, createItem} from "../../api/billService.js";
+import {getItemsByBillId, createItem, NewItemRequest} from "../../api/billService.js";
 
 interface Props {
     bill: bill;
@@ -39,10 +39,10 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
     }
 
     const handleAddNewItem = () => {
-        createItem({
-            ...newItem,
-            bill: {id: bill.id}
-        })
+        createItem(
+            new NewItemRequest(newItem.description, newItem.price, newItem.quantity, bill.id),
+            bill.id
+        )
             .then(response => {
                 setItems(prevItems => [...prevItems, response.data]);
                 // reset new item

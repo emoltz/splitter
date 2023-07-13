@@ -1,6 +1,7 @@
 package com.splitter.bill;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.splitter.item.Item;
 import jakarta.persistence.*;
 import java.util.List;
 
