@@ -1,5 +1,5 @@
 import axios from "axios";
-import configLoader from "../config/configLoader.ts";
+import configLoader from "../config/configLoader";
 // import {Item} from "../assets/interfaces.tsx";
 
 const apiBaseUrl = configLoader.apiUrl;
