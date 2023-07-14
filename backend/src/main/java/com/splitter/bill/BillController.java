@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173", "https://www.splitterproject.com/"})
+@CrossOrigin(origins = "${splitter.api.origin}")
 @RequestMapping("api/v1/splitter/bill")
 public class BillController {
 
