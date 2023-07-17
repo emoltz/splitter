@@ -26,7 +26,6 @@ function toTitleCase(str: string) {
     });
 }
 
-
 export default function BillDetail({bill, setVisible, bindings, isMobile}: Props) {
     const [items, setItems] = useState(bill.items || []);
     const [showInput, setShowInput] = useState<Boolean>(false);
@@ -100,28 +99,33 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
             </Modal.Header>
             <Modal.Body>
                 <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell>No.</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Quantity</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {items.map((item, index) => (
-              <AddedItem
-                key={index}
-                number={index}
-                description={item.description}
-                price={item.price}
-                quantity={item.quantity}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                    <Table
+                        size="small"
+                        aria-label="receipt items"
+                    >
+                        <TableHead>
+                            <TableRow
+                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                            >
+                                <TableCell style={{width:"10px"}}>No.</TableCell>
+                                <TableCell component="th" scope="row">Name</TableCell>
+                                <TableCell>Price</TableCell>
+                                <TableCell style={{width:"10px"}}>#</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {items.map((item, index) => (
+                                <AddedItem
+                                    key={index}
+                                    number={index}
+                                    description={item.description}
+                                    price={item.price}
+                                    quantity={item.quantity}
+                                />
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
                 <div>
                     {showInput &&
                         <BillItemInput
