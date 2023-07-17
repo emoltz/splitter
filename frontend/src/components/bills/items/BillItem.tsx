@@ -8,14 +8,10 @@ import {Button} from '@mui/material';
 interface BillItemInputProps {
     // onChange: (field: string, value: string | number) => void;
     onSave: (name: string, price: string | number, quantity: string | number) => void;
+    onCancel: () => void;
 }
 
-export default function BillItemInput({onSave}: BillItemInputProps): React.JSX.Element {
-    // const handleInputChange = (field: string, value: string) => {
-    //     onChange(field, value);
-    // }
-
-
+export default function BillItemInput({onSave, onCancel}: BillItemInputProps): React.JSX.Element {
     const [name, setName] = useState<string>("");
     const [price, setPrice] = useState<string | number>(0);
     const [quantity, setQuantity] = useState<string | number>(0);
@@ -23,6 +19,7 @@ export default function BillItemInput({onSave}: BillItemInputProps): React.JSX.E
         console.log(name, " | ", price, " | ", quantity)
         onSave(name, price, quantity);
     }
+
 
 
     return (
@@ -58,6 +55,12 @@ export default function BillItemInput({onSave}: BillItemInputProps): React.JSX.E
                     onClick={handleSaveClick}
                 >
                     Save
+                </Button>
+                <Button
+                    color={"warning"}
+                    onClick={onCancel}
+                        >
+                    Cancel
                 </Button>
             </div>
         </div>

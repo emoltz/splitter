@@ -22,9 +22,10 @@ function toTitleCase(str: string) {
 export default function BillDetail({bill, setVisible, bindings, isMobile}: Props) {
 
     const [items, setItems] = useState(bill.items || []);
-    const [newItem, setNewItem] = useState({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
     const [showInput, setShowInput] = useState<Boolean>(false);
-
+    const handleCancel = () => {
+        setShowInput(false);
+    }
 
     useEffect(() => {
         getItemsByBillId(bill.id)
@@ -43,22 +44,21 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
 
 
     const handleAddNewItem = (name: string, price: any, quantity: any) => {
-    createItem(
-        // Pass newItem here
-        new NewItemRequest(name, price, quantity, bill.id),
-        bill.id
-    )
-        .then(response => {
-            setItems(prevItems => [...prevItems, response.data]);
-            // After adding the item, reset the newItem state
-            setNewItem({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
-            setShowInput(false); // hide the input after adding the item
-        })
-        .catch(error => {
-            console.error('Error adding item: ', error);
-        })
-}
-
+        createItem(
+            // Pass newItem here
+            new NewItemRequest(name, price, quantity, bill.id),
+            bill.id
+        )
+            .then(response => {
+                setItems(prevItems => [...prevItems, response.data]);
+                // After adding the item, reset the newItem state
+                // setNewItem({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
+                setShowInput(false); // hide the input after adding the item
+            })
+            .catch(error => {
+                console.error('Error adding item: ', error);
+            })
+    }
 
 
     const handleModalClose = () => {
@@ -113,23 +113,9 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                     {showInput &&
                         <BillItemInput
                             onSave={handleAddNewItem}
+                            onCancel={handleCancel}
                         />
                     }
-                    {/*<TextField*/}
-                    {/*    label="Description"*/}
-                    {/*    value={newItem.description}*/}
-                    {/*    onChange={(event) => handleItemChange('description', event.target.value)}*/}
-                    {/*/>*/}
-                    {/*<TextField*/}
-                    {/*    label="Price"*/}
-                    {/*    value={newItem.price}*/}
-                    {/*    onChange={(event) => handleItemChange('price', Number(event.target.value))}*/}
-                    {/*/>*/}
-                    {/*<TextField*/}
-                    {/*    label="Quantity"*/}
-                    {/*    value={newItem.quantity}*/}
-                    {/*    onChange={(event) => handleItemChange('quantity', Number(event.target.value))}*/}
-                    {/*/>*/}
                 </div>
                 <div className={"text-center"}>
 
