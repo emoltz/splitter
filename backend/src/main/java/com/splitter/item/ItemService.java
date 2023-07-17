@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,15 +28,46 @@ public class ItemService {
 
     public ResponseEntity<Item> createItem(NewItemRequest newItemRequest) {
         Item item = new Item();
-        Optional<Bill> bill = billRepository.findById(newItemRequest.billId());
-        if (bill.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        Optional<Bill> billOptional = billRepository.findById(newItemRequest.billId());
+        if (billOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Bill id %d not found", newItemRequest.billId()));
         }
-        item.setBill(bill.get());
+        Bill bill = billOptional.get();
+        item.setBill(bill);
+        updateItemDetails(newItemRequest, item, bill);
+        return new ResponseEntity<>(item, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<Item> updateItem(Integer id, NewItemRequest newItemRequest) {
+        Optional<Item> itemOptional = itemRepository.findById(id);
+        if (itemOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
+        }
+        Item item = itemOptional.get();
+        Bill bill = item.getBill();
+        bill.setTotal(bill.getTotal() - (item.getPrice() * item.getQuantity()));
+        updateItemDetails(newItemRequest, item, bill);
+        return new ResponseEntity<>(item, HttpStatus.OK);
+    }
+
+    public void deleteItem(Integer id) {
+        Optional<Item> itemOptional = itemRepository.findById(id);
+        if (itemOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
+        }
+        Item item = itemOptional.get();
+        Bill bill = item.getBill();
+        bill.setTotal(bill.getTotal() - (item.getPrice() * item.getQuantity()));
+        itemRepository.deleteById(id);
+        billRepository.save(bill);
+    }
+
+    private void updateItemDetails(NewItemRequest newItemRequest, Item item, Bill bill) {
         item.setDescription(newItemRequest.description());
         item.setPrice(newItemRequest.price());
         item.setQuantity(newItemRequest.quantity());
         itemRepository.save(item);
-        return new ResponseEntity<>(item, HttpStatus.CREATED);
+        bill.setTotal(bill.getTotal() + (item.getPrice() * item.getQuantity()));
+        billRepository.save(bill);
     }
 }

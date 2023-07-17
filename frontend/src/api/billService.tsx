@@ -96,3 +96,21 @@ export const createItem = async (item: NewItemRequest, billId: number) => {
         throw e;
     }
 }
+
+export const updateItem = async (itemId: number, item: NewItemRequest, billId: number) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+        return await axios.put(`${apiBaseUrl}/bill/${billId}/item/${itemId}`, item);
+    } catch (e) {
+        throw e;
+    }
+}
+
+export const deleteItem = async(itemId: number, billId: number) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+        return await axios.delete(`${apiBaseUrl}/bill/${billId}/item/${itemId}`);
+    } catch (e) {
+        throw e;
+    }
+}

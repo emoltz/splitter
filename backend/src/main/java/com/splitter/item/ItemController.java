@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173", "https://www.splitterproject.com/"})
+@CrossOrigin(origins = "${splitter.api.origin}")
 @RequestMapping("api/v1/splitter/bill/{billId}/item")
 public class ItemController {
 
@@ -26,5 +26,13 @@ public class ItemController {
         return itemService.createItem(newItemRequest);
     }
 
-    // other mappings go below (PUT, DELETE, etc...
+    @PutMapping("/{itemId}")
+    public ResponseEntity<Item> updateItem(@PathVariable Integer itemId, @RequestBody NewItemRequest newItemRequest) {
+        return itemService.updateItem(itemId, newItemRequest);
+    }
+
+    @DeleteMapping("/{itemId}")
+    public void deleteItem(@PathVariable Integer itemId) {
+        itemService.deleteItem(itemId);
+    }
 }

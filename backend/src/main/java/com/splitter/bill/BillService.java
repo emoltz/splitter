@@ -3,12 +3,14 @@ package com.splitter.bill;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Service
 public class BillService {
@@ -22,6 +24,13 @@ public class BillService {
 
     public List<Bill> getBills() {
         return billRepository.findByArchivedFalse();
+    }
+
+    public Bill getBillById(Integer id) {
+        Optional<Bill> billOptional = billRepository.findById(id);
+        if (billOptional.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill not found");
+        return billOptional.get();
     }
 
     public ResponseEntity<Bill> createBill(NewBillRequest newBillRequest) {

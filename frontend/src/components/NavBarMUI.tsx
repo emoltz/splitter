@@ -34,8 +34,10 @@ export default function NavBarMUI(): JSX.Element {
             <Navbar.Brand>
                 <Navbar.Toggle aria-label={"toggle"}/>
                 <Spacer y={.5}/>
-                <Image src={"/split_logo.png"} width={50} height={50} alt={"logo"}/>
-                <Text h1>Splitter</Text>
+                <Link href={"/"}>
+                    <Image src={"/split_logo.png"} width={50} height={50} alt={"logo"}/>
+                    <Text h1>Splitter</Text>
+                </Link>
                 <Spacer y={1}/>
                 <Text i>the bill splitting app</Text>
             </Navbar.Brand>
