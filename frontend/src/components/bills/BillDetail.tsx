@@ -23,6 +23,8 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
 
     const [items, setItems] = useState(bill.items || []);
     const [newItem, setNewItem] = useState({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
+    const [showInput, setShowInput] = useState<Boolean>(false);
+
 
     useEffect(() => {
         getItemsByBillId(bill.id)
@@ -34,25 +36,29 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
             })
     }, [bill.id]);
 
+    // const handleItemChange = (key: keyof typeof newItem, value: string | number) => {
+    //     const actualValue = newItem[key] instanceof Number ? Number(value) : value;
+    //     setNewItem({...newItem, [key]: actualValue});
+    // }
 
-    const handleItemChange = (key: keyof typeof newItem, value: string | number) => {
-        setNewItem({...newItem, [key]: value});
-    }
 
-    const handleAddNewItem = () => {
-        createItem(
-            new NewItemRequest(newItem.description, newItem.price, newItem.quantity, bill.id),
-            bill.id
-        )
-            .then(response => {
-                setItems(prevItems => [...prevItems, response.data]);
-                // reset new item
-                setNewItem({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
-            })
-            .catch(error => {
-                console.error('Error adding item: ', error);
-            })
-    }
+    const handleAddNewItem = (name: string, price: any, quantity: any) => {
+    createItem(
+        // Pass newItem here
+        new NewItemRequest(name, price, quantity, bill.id),
+        bill.id
+    )
+        .then(response => {
+            setItems(prevItems => [...prevItems, response.data]);
+            // After adding the item, reset the newItem state
+            setNewItem({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
+            setShowInput(false); // hide the input after adding the item
+        })
+        .catch(error => {
+            console.error('Error adding item: ', error);
+        })
+}
+
 
 
     const handleModalClose = () => {
@@ -104,7 +110,11 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
 
                 ))}
                 <div>
-                    <BillItemInput/>
+                    {showInput &&
+                        <BillItemInput
+                            onSave={handleAddNewItem}
+                        />
+                    }
                     {/*<TextField*/}
                     {/*    label="Description"*/}
                     {/*    value={newItem.description}*/}
@@ -121,16 +131,19 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                     {/*    onChange={(event) => handleItemChange('quantity', Number(event.target.value))}*/}
                     {/*/>*/}
                 </div>
-                <Button onClick={handleAddNewItem}>Add Item</Button>
+                <div className={"text-center"}>
+
+                    <Button onClick={() => setShowInput(true)}>Add Item</Button>
+                </div>
             </Modal.Body>
             <Modal.Footer>
 
                 <Button
                     variant={"contained"}
-                    color={"success"}
+                    color={"error"}
                     onClick={handleModalClose}
                 >
-                    Save
+                    Close
                 </Button>
             </Modal.Footer>
         </Modal>
