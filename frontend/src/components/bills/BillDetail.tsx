@@ -4,6 +4,14 @@ import {bill} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
 import {getItemsByBillId, createItem, NewItemRequest} from "../../api/billService.js";
 import BillItemInput from './items/BillItem';
+import AddedItem from './items/AddedItem';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 interface Props {
     bill: bill;
@@ -20,7 +28,6 @@ function toTitleCase(str: string) {
 
 
 export default function BillDetail({bill, setVisible, bindings, isMobile}: Props) {
-
     const [items, setItems] = useState(bill.items || []);
     const [showInput, setShowInput] = useState<Boolean>(false);
     const handleCancel = () => {
@@ -36,12 +43,6 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                 console.error('Error fetching items: ', error);
             })
     }, [bill.id]);
-
-    // const handleItemChange = (key: keyof typeof newItem, value: string | number) => {
-    //     const actualValue = newItem[key] instanceof Number ? Number(value) : value;
-    //     setNewItem({...newItem, [key]: actualValue});
-    // }
-
 
     const handleAddNewItem = (name: string, price: any, quantity: any) => {
         createItem(
@@ -98,17 +99,29 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                 </Typography>
             </Modal.Header>
             <Modal.Body>
-                {items.map((item, index) => (
-                    <div key={index}>
-                        {item.description}
-                        <div>
-
-                            ${item.price}
-                        </div>
-
-                    </div>
-
-                ))}
+                <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+          <TableHead>
+            <TableRow>
+              <TableCell>No.</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Price</TableCell>
+              <TableCell>Quantity</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {items.map((item, index) => (
+              <AddedItem
+                key={index}
+                number={index}
+                description={item.description}
+                price={item.price}
+                quantity={item.quantity}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
                 <div>
                     {showInput &&
                         <BillItemInput
