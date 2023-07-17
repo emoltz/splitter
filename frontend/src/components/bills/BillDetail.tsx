@@ -1,8 +1,9 @@
 import {Modal} from '@nextui-org/react';
-import {Button, TextField, Typography} from '@mui/material';
+import {Button, Typography} from '@mui/material';
 import {bill} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
 import {getItemsByBillId, createItem, NewItemRequest} from "../../api/billService.js";
+import BillItemInput from './items/BillItem';
 
 interface Props {
     bill: bill;
@@ -84,7 +85,7 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                 >
                     {titleFormatted}
                     <Typography
-                        variant={"h6"}
+
                     >
                         {dateFormatted}
                     </Typography>
@@ -103,21 +104,22 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
 
                 ))}
                 <div>
-                    <TextField
-                        label="Description"
-                        value={newItem.description}
-                        onChange={(event) => handleItemChange('description', event.target.value)}
-                    />
-                    <TextField
-                        label="Price"
-                        value={newItem.price}
-                        onChange={(event) => handleItemChange('price', Number(event.target.value))}
-                    />
-                    <TextField
-                        label="Quantity"
-                        value={newItem.quantity}
-                        onChange={(event) => handleItemChange('quantity', Number(event.target.value))}
-                    />
+                    <BillItemInput/>
+                    {/*<TextField*/}
+                    {/*    label="Description"*/}
+                    {/*    value={newItem.description}*/}
+                    {/*    onChange={(event) => handleItemChange('description', event.target.value)}*/}
+                    {/*/>*/}
+                    {/*<TextField*/}
+                    {/*    label="Price"*/}
+                    {/*    value={newItem.price}*/}
+                    {/*    onChange={(event) => handleItemChange('price', Number(event.target.value))}*/}
+                    {/*/>*/}
+                    {/*<TextField*/}
+                    {/*    label="Quantity"*/}
+                    {/*    value={newItem.quantity}*/}
+                    {/*    onChange={(event) => handleItemChange('quantity', Number(event.target.value))}*/}
+                    {/*/>*/}
                 </div>
                 <Button onClick={handleAddNewItem}>Add Item</Button>
             </Modal.Body>
