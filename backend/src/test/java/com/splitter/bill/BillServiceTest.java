@@ -4,10 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
@@ -26,16 +28,23 @@ public class BillServiceTest {
     @Test
     void getBills() {
         List<Bill> allBills = billService.getBills();
-
-        // Should be empty
         assertTrue(allBills.isEmpty());
     }
 
     @Test
     void createBill() {
-        billService.createBill(new NewBillRequest("Test Bill", "2023-01-01", 45.00));
+        ResponseEntity<Bill> newBill = billService.createBill(new NewBillRequest("Test Bill", "2023-01-01", 45.00));
+        assertTrue(billService.getBills().contains(newBill.getBody()));
+    }
 
-        // There should be 1 bill now
-        assertThat(billService.getBills().size()).isEqualTo(1);
+    @Test
+    void archiveBill() {
+        ResponseEntity<Bill> newBill = billService.createBill(new NewBillRequest("Test Bill", "2023-01-01", 45.00));
+        Bill bill = newBill.getBody();
+        assert bill != null;
+        assertFalse(bill.getArchived());
+        billService.archiveBill(bill.getId());
+        assertTrue(bill.getArchived());
+        assertFalse(billService.getBills().contains(bill));
     }
 }
