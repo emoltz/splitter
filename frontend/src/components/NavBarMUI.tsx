@@ -40,7 +40,8 @@ export default function NavBarMUI(): JSX.Element {
                 <Text i>the bill splitting app</Text>
             </Navbar.Brand>
             <Navbar.Content enableCursorHighlight hideIn={"sm"} variant={"underline"}>
-                {!user &&
+                {!user ?
+                <Link href={"/login"}>
 
                 <Button
                     variant={"outlined"}
@@ -49,14 +50,20 @@ export default function NavBarMUI(): JSX.Element {
                 >
                     Login
                 </Button>
-                }
-                {user &&
+                </Link>
+                    :
+                    <>
+                         <Link href={"/login"}>
+
                 <Button
                     variant={"outlined"}
-                    >
-                    My Profile
+                    disabled={loading}
+                    startIcon={loading && <CircularProgress size={20}/>}
+                >
+                    Profile
                 </Button>
-
+                </Link>
+                    </>
                 }
 
 
