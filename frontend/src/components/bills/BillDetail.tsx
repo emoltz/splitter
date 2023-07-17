@@ -1,8 +1,17 @@
 import {Modal} from '@nextui-org/react';
-import {Button, TextField, Typography} from '@mui/material';
+import {Button, Typography} from '@mui/material';
 import {bill} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
 import {getItemsByBillId, createItem, NewItemRequest} from "../../api/billService.js";
+import BillItemInput from './items/BillItem';
+import AddedItem from './items/AddedItem';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 interface Props {
     bill: bill;
@@ -17,11 +26,12 @@ function toTitleCase(str: string) {
     });
 }
 
-
 export default function BillDetail({bill, setVisible, bindings, isMobile}: Props) {
-
     const [items, setItems] = useState(bill.items || []);
-    const [newItem, setNewItem] = useState({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
+    const [showInput, setShowInput] = useState<Boolean>(false);
+    const handleCancel = () => {
+        setShowInput(false);
+    }
 
     useEffect(() => {
         getItemsByBillId(bill.id)
@@ -33,20 +43,17 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
             })
     }, [bill.id]);
 
-
-    const handleItemChange = (key: keyof typeof newItem, value: string | number) => {
-        setNewItem({...newItem, [key]: value});
-    }
-
-    const handleAddNewItem = () => {
+    const handleAddNewItem = (name: string, price: any, quantity: any) => {
         createItem(
-            new NewItemRequest(newItem.description, newItem.price, newItem.quantity, bill.id),
+            // Pass newItem here
+            new NewItemRequest(name, price, quantity, bill.id),
             bill.id
         )
             .then(response => {
                 setItems(prevItems => [...prevItems, response.data]);
-                // reset new item
-                setNewItem({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
+                // After adding the item, reset the newItem state
+                // setNewItem({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
+                setShowInput(false); // hide the input after adding the item
             })
             .catch(error => {
                 console.error('Error adding item: ', error);
@@ -84,51 +91,62 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                 >
                     {titleFormatted}
                     <Typography
-                        variant={"h6"}
+
                     >
                         {dateFormatted}
                     </Typography>
                 </Typography>
             </Modal.Header>
             <Modal.Body>
-                {items.map((item, index) => (
-                    <div key={index}>
-                        {item.description}
-                        <div>
-
-                            ${item.price}
-                        </div>
-
-                    </div>
-
-                ))}
+                <TableContainer component={Paper}>
+                    <Table
+                        size="small"
+                        aria-label="receipt items"
+                    >
+                        <TableHead>
+                            <TableRow
+                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                            >
+                                <TableCell style={{width:"10px"}}>No.</TableCell>
+                                <TableCell component="th" scope="row">Name</TableCell>
+                                <TableCell>Price</TableCell>
+                                <TableCell style={{width:"10px"}}>#</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {items.map((item, index) => (
+                                <AddedItem
+                                    key={index}
+                                    number={index}
+                                    description={item.description}
+                                    price={item.price}
+                                    quantity={item.quantity}
+                                />
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
                 <div>
-                    <TextField
-                        label="Description"
-                        value={newItem.description}
-                        onChange={(event) => handleItemChange('description', event.target.value)}
-                    />
-                    <TextField
-                        label="Price"
-                        value={newItem.price}
-                        onChange={(event) => handleItemChange('price', Number(event.target.value))}
-                    />
-                    <TextField
-                        label="Quantity"
-                        value={newItem.quantity}
-                        onChange={(event) => handleItemChange('quantity', Number(event.target.value))}
-                    />
+                    {showInput &&
+                        <BillItemInput
+                            onSave={handleAddNewItem}
+                            onCancel={handleCancel}
+                        />
+                    }
                 </div>
-                <Button onClick={handleAddNewItem}>Add Item</Button>
+                <div className={"text-center"}>
+
+                    <Button onClick={() => setShowInput(true)}>Add Item</Button>
+                </div>
             </Modal.Body>
             <Modal.Footer>
 
                 <Button
                     variant={"contained"}
-                    color={"success"}
+                    color={"error"}
                     onClick={handleModalClose}
                 >
-                    Save
+                    Close
                 </Button>
             </Modal.Footer>
         </Modal>
