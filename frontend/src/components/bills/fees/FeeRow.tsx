@@ -6,6 +6,9 @@ interface Props {
 }
 
 function FeeRow({description, price}: Props) {
+
+    const priceFormatted = price.toFixed(2);
+
     return (
         <TableRow
             key={description}
@@ -13,7 +16,7 @@ function FeeRow({description, price}: Props) {
             style={{width: '100px'}}
         >
             <TableCell>{description}</TableCell>
-            <TableCell component="th" scope="row">${price}</TableCell>
+            <TableCell component="th" scope="row">${priceFormatted}</TableCell>
         </TableRow>
     )
 }

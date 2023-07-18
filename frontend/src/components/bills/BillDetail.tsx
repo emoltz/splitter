@@ -1,8 +1,9 @@
 import {Modal} from '@nextui-org/react';
-import {Button, Typography} from '@mui/material';
-import {bill, Fee} from "../../assets/interfaces";
+import {Button, Typography, Stack} from '@mui/material';
+import {Bill} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
 import {getItemsByBillId, createItem, NewItemRequest} from "../../api/billService.js";
+import {createFee, getFeesByBillId, NewFeeRequest} from "../../api/feeService.tsx";
 import BillItemInput from './items/BillItem';
 import AddedItem from './items/AddedItem';
 import FeesList from "./fees/FeesList.tsx";
@@ -16,10 +17,11 @@ import Paper from '@mui/material/Paper';
 import FeeInput from "./fees/FeeInput.tsx";
 
 interface Props {
-    bill: bill;
+    bill: Bill;
     setVisible: (visible: boolean) => void;
     bindings: any;
     isMobile: boolean;
+    updateBillTotal: (billId: number, newTotal: number) => void;
 }
 
 function toTitleCase(str: string) {
@@ -28,14 +30,10 @@ function toTitleCase(str: string) {
     });
 }
 
-export default function BillDetail({bill, setVisible, bindings, isMobile}: Props) {
+export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: Props) {
+    const [billTotal, setBillTotal] = useState(bill.total);
     const [items, setItems] = useState(bill.items || []);
-    const [fees, setFees] = useState<Fee[]>(
-        [
-            {description: "Tax", price: 0.0},
-            {description: "Tip", price: 0.0}
-        ]
-    )
+    const [fees, setFees] = useState(bill.fees || []);
     const [showItemInput, setShowItemInput] = useState<boolean>(false);
     const [showFeeInput, setShowFeeInput] = useState<boolean>(false);
     const handleCancelItemInput = () => {
@@ -54,16 +52,24 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
             .catch(error => {
                 console.error('Error fetching items: ', error);
             })
+        getFeesByBillId(bill.id)
+            .then(response => {
+                setFees(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching fees: ', error);
+            })
     }, [bill.id]);
 
     const handleAddNewItem = (name: string, price: any, quantity: any) => {
         createItem(
-            // Pass newItem here
             new NewItemRequest(name, price, quantity, bill.id),
             bill.id
         )
             .then(response => {
                 setItems(prevItems => [...prevItems, response.data]);
+                setBillTotal(billTotal + response.data.price);
+                updateBillTotal(bill.id, billTotal + response.data.price);
                 // After adding the item, reset the newItem state
                 // setNewItem({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
                 setShowItemInput(false); // hide the input after adding the item
@@ -74,13 +80,19 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
     }
 
     const handleAddNewFee = (description: string, price: number) => {
-        //NEEDS TO BE IMPLEMENTED
-        const newFee: Fee = {description: description, price: price};
-        setFees(prevFees => [...prevFees, newFee]);
-    }
-
-    const handleModalClose = () => {
-        setVisible(false);
+        createFee(
+            new NewFeeRequest(description, price, bill.id),
+            bill.id
+        )
+            .then(response => {
+                setFees(prevFees => [...prevFees, response.data]);
+                setBillTotal(billTotal + response.data.price);
+                updateBillTotal(bill.id, billTotal + response.data.price);
+                setShowFeeInput(false);
+            })
+            .catch(error => {
+                console.error('Error creating fee: ', error);
+            })
     }
 
     const dateFormatted = new Date(bill.date).toLocaleDateString('en-us', {
@@ -90,6 +102,8 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
     });
 
     const titleFormatted = toTitleCase(bill.title)
+
+    const totalFormatted = billTotal.toFixed(2)
 
 
     return (
@@ -108,11 +122,10 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                     variant={"h2"}
                 >
                     {titleFormatted}
-                    <Typography
-
-                    >
-                        {dateFormatted}
-                    </Typography>
+                <Typography
+                >
+                    {dateFormatted}
+                </Typography>
                 </Typography>
             </Modal.Header>
             <Modal.Body>
@@ -153,7 +166,6 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                     }
                 </div>
                 <div className={"text-center"}>
-
                     <Button onClick={() => setShowItemInput(true)}>Add Item</Button>
                 </div>
                 <TableContainer component={Paper}>
@@ -173,14 +185,20 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
 
             </Modal.Body>
             <Modal.Footer>
-
-                <Button
-                    variant={"contained"}
-                    color={"error"}
-                    onClick={handleModalClose}
-                >
-                    Close
-                </Button>
+                <Stack direction="row" spacing={1} justifyContent="space-between">
+                    <Typography
+                        variant="h6"
+                    >
+                        Total:
+                    </Typography>
+                    <Typography
+                        variant="h6"
+                        fontWeight="theme.typography.fontWeightRegular"
+                        color="green"
+                    >
+                        ${totalFormatted}
+                    </Typography>
+                </Stack>
             </Modal.Footer>
         </Modal>
     );

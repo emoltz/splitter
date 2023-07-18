@@ -1,25 +1,26 @@
-export interface bill {
+export interface Bill {
     id: number;
     title: string;
     date: string;
     total: number;
     items: Item[];
+    fees: Fee[];
 }
 
-export interface Item{
+export interface Item {
     id: number;
     description: string;
     price: number;
     quantity: number;
-    person: person;
+    person: Person;
 }
 
-interface person{
+interface Person {
     id: number;
     name: string;
 }
 
-export interface ModalBindings{
+export interface ModalBindings {
     visible: boolean;
     open: () => void;
     close: () => void;
