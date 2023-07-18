@@ -3,7 +3,7 @@ import {Button, Typography, Stack} from '@mui/material';
 import {Bill} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
 import {getItemsByBillId, createItem, NewItemRequest} from "../../api/billService.js";
-import {createFee, getFeesByBillId, NewFeeRequest} from "../../api/feeService.tsx";
+import {createFee, deleteFee, getFeesByBillId, NewFeeRequest} from "../../api/feeService.tsx";
 import BillItemInput from './items/BillItem';
 import AddedItem from './items/AddedItem';
 import FeesList from "./fees/FeesList.tsx";
@@ -95,6 +95,20 @@ export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: 
             })
     }
 
+    const handleDeleteFee = (feeId: number) => {
+        const feeToRemove = fees.find(fee => fee.id === feeId)
+        const feePrice = feeToRemove ? feeToRemove.price : 0.0;
+        deleteFee(feeId, bill.id)
+            .then(() => {
+                setFees(prevFees => prevFees.filter(fee => fee.id !== feeId));
+                setBillTotal(billTotal - feePrice);
+                updateBillTotal(bill.id, billTotal - feePrice);
+            })
+            .catch(error => {
+                console.error('Error deleting fee: ', error);
+            })
+    }
+
     const dateFormatted = new Date(bill.date).toLocaleDateString('en-us', {
         month: "short",
         day: "numeric",
@@ -169,7 +183,10 @@ export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: 
                     <Button onClick={() => setShowItemInput(true)}>Add Item</Button>
                 </div>
                 <TableContainer component={Paper}>
-                    <FeesList fees={fees} />
+                    <FeesList
+                        fees={fees}
+                        deleteFee={handleDeleteFee}
+                    />
                 </TableContainer>
                 <div>
                     {showFeeInput &&

@@ -1,11 +1,14 @@
-import {TableRow, TableCell} from '@mui/material';
+import {TableRow, TableCell, IconButton} from '@mui/material';
+import {Delete} from "@mui/icons-material";
 
 interface Props {
+    id: number;
     description: string;
     price: number;
+    deleteFee: (feeId: number) => void;
 }
 
-function FeeRow({description, price}: Props) {
+function FeeRow({id, description, price, deleteFee}: Props) {
 
     const priceFormatted = price.toFixed(2);
 
@@ -17,6 +20,11 @@ function FeeRow({description, price}: Props) {
         >
             <TableCell>{description}</TableCell>
             <TableCell component="th" scope="row">${priceFormatted}</TableCell>
+            <TableCell align="right">
+                <IconButton onClick={() => deleteFee(id)} >
+                    <Delete aria-label="delete-fee" />
+                </IconButton>
+            </TableCell>
         </TableRow>
     )
 }
