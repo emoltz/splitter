@@ -68,8 +68,8 @@ export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: 
         )
             .then(response => {
                 setItems(prevItems => [...prevItems, response.data]);
-                setBillTotal(billTotal + response.data.price);
-                updateBillTotal(bill.id, billTotal + response.data.price);
+                setBillTotal(billTotal + (response.data.price * response.data.quantity));
+                updateBillTotal(bill.id, billTotal + (response.data.price * response.data.quantity));
                 // After adding the item, reset the newItem state
                 // setNewItem({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
                 setShowItemInput(false); // hide the input after adding the item
