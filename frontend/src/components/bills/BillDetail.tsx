@@ -1,10 +1,12 @@
 import {Modal} from '@nextui-org/react';
-import {Button, Typography} from '@mui/material';
-import {bill} from "../../assets/interfaces";
+import {Button, Typography, Stack} from '@mui/material';
+import {Bill} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
 import {getItemsByBillId, createItem, NewItemRequest} from "../../api/billService.js";
+import {createFee, getFeesByBillId, NewFeeRequest} from "../../api/feeService.tsx";
 import BillItemInput from './items/BillItem';
 import AddedItem from './items/AddedItem';
+import FeesList from "./fees/FeesList.tsx";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,12 +14,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import FeeInput from "./fees/FeeInput.tsx";
 
 interface Props {
-    bill: bill;
+    bill: Bill;
     setVisible: (visible: boolean) => void;
     bindings: any;
     isMobile: boolean;
+    updateBillTotal: (billId: number, newTotal: number) => void;
 }
 
 function toTitleCase(str: string) {
@@ -26,11 +30,18 @@ function toTitleCase(str: string) {
     });
 }
 
-export default function BillDetail({bill, setVisible, bindings, isMobile}: Props) {
+export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: Props) {
+    const [billTotal, setBillTotal] = useState(bill.total);
     const [items, setItems] = useState(bill.items || []);
-    const [showInput, setShowInput] = useState<Boolean>(false);
-    const handleCancel = () => {
-        setShowInput(false);
+    const [fees, setFees] = useState(bill.fees || []);
+    const [showItemInput, setShowItemInput] = useState<boolean>(false);
+    const [showFeeInput, setShowFeeInput] = useState<boolean>(false);
+    const handleCancelItemInput = () => {
+        setShowItemInput(false);
+    }
+
+    const handleCancelFeeInput = () => {
+        setShowFeeInput(false);
     }
 
     useEffect(() => {
@@ -41,28 +52,47 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
             .catch(error => {
                 console.error('Error fetching items: ', error);
             })
+        getFeesByBillId(bill.id)
+            .then(response => {
+                setFees(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching fees: ', error);
+            })
     }, [bill.id]);
 
     const handleAddNewItem = (name: string, price: any, quantity: any) => {
         createItem(
-            // Pass newItem here
             new NewItemRequest(name, price, quantity, bill.id),
             bill.id
         )
             .then(response => {
                 setItems(prevItems => [...prevItems, response.data]);
+                setBillTotal(billTotal + (response.data.price * response.data.quantity));
+                updateBillTotal(bill.id, billTotal + (response.data.price * response.data.quantity));
                 // After adding the item, reset the newItem state
                 // setNewItem({id: 0, description: '', price: 0, quantity: 0, person: {id: 0, name: ''}});
-                setShowInput(false); // hide the input after adding the item
+                setShowItemInput(false); // hide the input after adding the item
             })
             .catch(error => {
                 console.error('Error adding item: ', error);
             })
     }
 
-
-    const handleModalClose = () => {
-        setVisible(false);
+    const handleAddNewFee = (description: string, price: number) => {
+        createFee(
+            new NewFeeRequest(description, price, bill.id),
+            bill.id
+        )
+            .then(response => {
+                setFees(prevFees => [...prevFees, response.data]);
+                setBillTotal(billTotal + response.data.price);
+                updateBillTotal(bill.id, billTotal + response.data.price);
+                setShowFeeInput(false);
+            })
+            .catch(error => {
+                console.error('Error creating fee: ', error);
+            })
     }
 
     const dateFormatted = new Date(bill.date).toLocaleDateString('en-us', {
@@ -72,6 +102,8 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
     });
 
     const titleFormatted = toTitleCase(bill.title)
+
+    const totalFormatted = billTotal.toFixed(2)
 
 
     return (
@@ -90,11 +122,10 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                     variant={"h2"}
                 >
                     {titleFormatted}
-                    <Typography
-
-                    >
-                        {dateFormatted}
-                    </Typography>
+                <Typography
+                >
+                    {dateFormatted}
+                </Typography>
                 </Typography>
             </Modal.Header>
             <Modal.Body>
@@ -110,7 +141,7 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                                 <TableCell style={{width:"10px"}}>No.</TableCell>
                                 <TableCell component="th" scope="row">Name</TableCell>
                                 <TableCell>Price</TableCell>
-                                <TableCell style={{width:"10px"}}>#</TableCell>
+                                <TableCell style={{width:"10px"}}>Quantity</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -127,27 +158,47 @@ export default function BillDetail({bill, setVisible, bindings, isMobile}: Props
                     </Table>
                 </TableContainer>
                 <div>
-                    {showInput &&
+                    {showItemInput &&
                         <BillItemInput
                             onSave={handleAddNewItem}
-                            onCancel={handleCancel}
+                            onCancel={handleCancelItemInput}
                         />
                     }
                 </div>
                 <div className={"text-center"}>
-
-                    <Button onClick={() => setShowInput(true)}>Add Item</Button>
+                    <Button onClick={() => setShowItemInput(true)}>Add Item</Button>
                 </div>
+                <TableContainer component={Paper}>
+                    <FeesList fees={fees} />
+                </TableContainer>
+                <div>
+                    {showFeeInput &&
+                        <FeeInput
+                            onSave={handleAddNewFee}
+                            onCancel={handleCancelFeeInput}
+                        />
+                    }
+                </div>
+                <div className={"text-center"}>
+                    <Button onClick={() => setShowFeeInput(true)}>Add Fee</Button>
+                </div>
+
             </Modal.Body>
             <Modal.Footer>
-
-                <Button
-                    variant={"contained"}
-                    color={"error"}
-                    onClick={handleModalClose}
-                >
-                    Close
-                </Button>
+                <Stack direction="row" spacing={1} justifyContent="space-between">
+                    <Typography
+                        variant="h6"
+                    >
+                        Total:
+                    </Typography>
+                    <Typography
+                        variant="h6"
+                        fontWeight="theme.typography.fontWeightRegular"
+                        color="green"
+                    >
+                        ${totalFormatted}
+                    </Typography>
+                </Stack>
             </Modal.Footer>
         </Modal>
     );

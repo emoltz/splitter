@@ -10,13 +10,13 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import {useModal} from "@nextui-org/react";
-import {bill} from "../../assets/interfaces"
+import {Bill} from "../../assets/interfaces"
 import "../../App.css";
 
 function BillsList() {
-    const [bills, setBills] = useState<bill[]>([]);
+    const [bills, setBills] = useState<Bill[]>([]);
     const [formVisible, setFormVisible] = useState(false);
-    const [selectedBill, setSelectedBill] = useState<bill>();
+    const [selectedBill, setSelectedBill] = useState<Bill>();
     const {setVisible, bindings} = useModal();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -47,9 +47,20 @@ function BillsList() {
 
     }
 
-    const handleBillClick = (bill: bill) => {
+    const handleBillClick = (bill: Bill) => {
         setSelectedBill(bill);
         setVisible(true);
+    }
+
+    const handleBillTotalChange = (billId: number, newTotal: number) => {
+        setBills(prevBills => {
+            return prevBills.map(bill => {
+                if (bill.id === billId) {
+                    return {...bill, total: newTotal};
+                }
+                return bill;
+            });
+        });
     }
 
     return (
@@ -118,6 +129,7 @@ function BillsList() {
                 setVisible={setVisible}
                 bindings={bindings}
                 isMobile={isMobile}
+                updateBillTotal={handleBillTotalChange}
             />
             }
         </>

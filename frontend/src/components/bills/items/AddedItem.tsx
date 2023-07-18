@@ -8,6 +8,10 @@ interface Props {
 }
 
 export default function AddedItem({description, price, quantity, number}: Props) {
+
+    const priceFormatted = typeof price !== "string" ? price.toFixed(2) : price
+
+
     return (
         <TableRow
             key={description}
@@ -18,8 +22,8 @@ export default function AddedItem({description, price, quantity, number}: Props)
                 {number + 1}
             </TableCell>
             <TableCell component="th" scope="row">{description}</TableCell>
-            <TableCell align="left">${price}</TableCell>
-            <TableCell align="left">{quantity}</TableCell>
+            <TableCell align="left">${priceFormatted}</TableCell>
+            <TableCell align="center">{quantity}</TableCell>
         </TableRow>
     )
 }
