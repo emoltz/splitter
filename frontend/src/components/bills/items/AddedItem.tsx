@@ -19,7 +19,7 @@ export default function AddedItem({description, price, quantity, number}: Props)
             </TableCell>
             <TableCell component="th" scope="row">{description}</TableCell>
             <TableCell align="left">${price}</TableCell>
-            <TableCell align="left">{quantity}</TableCell>
+            <TableCell align="center">{quantity}</TableCell>
         </TableRow>
     )
 }

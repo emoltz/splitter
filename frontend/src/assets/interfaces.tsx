@@ -24,3 +24,8 @@ export interface ModalBindings{
     open: () => void;
     close: () => void;
 }
+
+export interface Fee {
+    description: string;
+    price: number;
+}

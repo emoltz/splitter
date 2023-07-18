@@ -39,11 +39,7 @@ public class ItemService {
     }
 
     public ResponseEntity<Item> updateItem(Integer id, NewItemRequest newItemRequest) {
-        Optional<Item> itemOptional = itemRepository.findById(id);
-        if (itemOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
-        }
-        Item item = itemOptional.get();
+        Item item = findExistingItem(id);
         Bill bill = item.getBill();
         bill.setTotal(bill.getTotal() - (item.getPrice() * item.getQuantity()));
         updateItemDetails(newItemRequest, item, bill);
@@ -51,11 +47,7 @@ public class ItemService {
     }
 
     public void deleteItem(Integer id) {
-        Optional<Item> itemOptional = itemRepository.findById(id);
-        if (itemOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
-        }
-        Item item = itemOptional.get();
+        Item item = findExistingItem(id);
         Bill bill = item.getBill();
         bill.setTotal(bill.getTotal() - (item.getPrice() * item.getQuantity()));
         itemRepository.deleteById(id);
@@ -69,5 +61,12 @@ public class ItemService {
         itemRepository.save(item);
         bill.setTotal(bill.getTotal() + (item.getPrice() * item.getQuantity()));
         billRepository.save(bill);
+    }
+
+    private Item findExistingItem(Integer id) {
+        Optional<Item> itemOptional = itemRepository.findById(id);
+        if (itemOptional.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
+        return itemOptional.get();
     }
 }

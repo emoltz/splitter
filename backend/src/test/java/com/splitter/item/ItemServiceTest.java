@@ -43,13 +43,13 @@ public class ItemServiceTest {
     }
 
     @Test
-    void getItemsByBillId() {
+    void testGetItemsByBillId() {
         List<Item> itemsList = itemService.getItemsByBillId(billId);
         assertTrue(itemsList.isEmpty());
     }
 
     @Test
-    void createItem() {
+    void testCreateItem() {
         ResponseEntity<Item> newItem = itemService.createItem(new NewItemRequest(
                 "Hamburger",
                 16.0,
@@ -61,7 +61,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void updateItem() {
+    void testUpdateItem() {
         double oldPrice = 16.0;
         int oldQuantity = 1;
         double newPrice = 20.0;
@@ -88,7 +88,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void deleteItem() {
+    void testDeleteItem() {
         ResponseEntity<Item> newItem = itemService.createItem(new NewItemRequest(
                 "Hamburger",
                 16.0,

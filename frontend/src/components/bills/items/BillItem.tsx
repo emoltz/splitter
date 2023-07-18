@@ -20,8 +20,6 @@ export default function BillItemInput({onSave, onCancel}: BillItemInputProps): R
         onSave(name, price, quantity);
     }
 
-
-
     return (
         <div className={"border"}>
             <div className={"grid grid-cols-1 md:grid-cols-3 md:gap-3  rounded-lg p-3 gap-3"}>
