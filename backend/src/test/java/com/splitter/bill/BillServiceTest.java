@@ -1,5 +1,6 @@
 package com.splitter.bill;
 
+import com.splitter.fee.FeeRepository;
 import com.splitter.fee.FeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,8 +22,12 @@ public class BillServiceTest {
     @Autowired
     private BillRepository billRepository;
 
+    @Autowired
+    private FeeRepository feeRepository;
+
     @BeforeEach
     void setUp() {
+        feeService = new FeeService(feeRepository, billRepository);
         billService = new BillService(billRepository, feeService);
     }
 
