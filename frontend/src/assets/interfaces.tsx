@@ -27,6 +27,7 @@ export interface ModalBindings {
 }
 
 export interface Fee {
+    id: number;
     description: string;
     price: number;
 }

@@ -1,9 +1,9 @@
 import {Modal} from '@nextui-org/react';
 import {Button, Typography, Stack} from '@mui/material';
-import {Bill} from "../../assets/interfaces";
+import {Bill, Fee} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
 import {getItemsByBillId, createItem, NewItemRequest} from "../../api/billService.js";
-import {createFee, getFeesByBillId, NewFeeRequest} from "../../api/feeService.tsx";
+import {createFee, deleteFee, getFeesByBillId, NewFeeRequest, updateFee} from "../../api/feeService.tsx";
 import BillItemInput from './items/BillItem';
 import AddedItem from './items/AddedItem';
 import FeesList from "./fees/FeesList.tsx";
@@ -14,7 +14,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import FeeInput from "./fees/FeeInput.tsx";
+import NewFeeInput from "./fees/NewFeeInput.tsx";
 
 interface Props {
     bill: Bill;
@@ -36,6 +36,7 @@ export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: 
     const [fees, setFees] = useState(bill.fees || []);
     const [showItemInput, setShowItemInput] = useState<boolean>(false);
     const [showFeeInput, setShowFeeInput] = useState<boolean>(false);
+
     const handleCancelItemInput = () => {
         setShowItemInput(false);
     }
@@ -92,6 +93,40 @@ export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: 
             })
             .catch(error => {
                 console.error('Error creating fee: ', error);
+            })
+    }
+
+    const handleUpdateFee = (feeToUpdate: Fee, description: string, price: number) => {
+        updateFee(
+            feeToUpdate.id,
+            new NewFeeRequest(description, price, bill.id),
+            bill.id
+        )
+            .then(response => {
+                setFees(fees.map(fee => {
+                    if (fee.id === feeToUpdate.id) {
+                        return { ...fee, description: response.data.description, price: response.data.price};
+                    }
+                    return fee;
+                }));
+                setBillTotal((billTotal-feeToUpdate.price) + response.data.price);
+                updateBillTotal(bill.id, (billTotal-feeToUpdate.price)  + response.data.price);
+            })
+            .catch(error => {
+                console.error('Error updating fee: ', error);
+            })
+    }
+
+    const handleDeleteFee = (feeToRemove: Fee) => {
+        const feePrice = feeToRemove.price
+        deleteFee(feeToRemove.id, bill.id)
+            .then(() => {
+                setFees(prevFees => prevFees.filter(fee => fee.id !== feeToRemove.id));
+                setBillTotal(billTotal - feePrice);
+                updateBillTotal(bill.id, billTotal - feePrice);
+            })
+            .catch(error => {
+                console.error('Error deleting fee: ', error);
             })
     }
 
@@ -169,11 +204,15 @@ export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: 
                     <Button onClick={() => setShowItemInput(true)}>Add Item</Button>
                 </div>
                 <TableContainer component={Paper}>
-                    <FeesList fees={fees} />
+                    <FeesList
+                        fees={fees}
+                        deleteFee={handleDeleteFee}
+                        updateFee={handleUpdateFee}
+                    />
                 </TableContainer>
                 <div>
                     {showFeeInput &&
-                        <FeeInput
+                        <NewFeeInput
                             onSave={handleAddNewFee}
                             onCancel={handleCancelFeeInput}
                         />
