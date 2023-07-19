@@ -7,7 +7,7 @@ interface FeeInputProps {
     onCancel: () => void;
 }
 
-export default function FeeInput({onSave, onCancel}: FeeInputProps) {
+export default function NewFeeInput({onSave, onCancel}: FeeInputProps) {
     const [description, setDescription] = useState<string>("");
     const [price, setPrice] = useState<number>(0.0);
 
@@ -19,12 +19,14 @@ export default function FeeInput({onSave, onCancel}: FeeInputProps) {
         <div className={"border"}>
             <div className={"grid grid-cols-1 md:grid-cols-3 md:gap-3  rounded-lg p-3 gap-3"}>
                 <Input
+                    aria-label={"new-description"}
                     clearable
                     placeholder={"Description"}
                     onChange={(e: any) => setDescription(e.target.value)}
                 />
                 <div className={"flex gap-3 justify-between"}>
                     <Input
+                        aria-label={"new-price"}
                         type={"number"}
                         placeholder={"Amount"}
                         labelLeft={"$"}

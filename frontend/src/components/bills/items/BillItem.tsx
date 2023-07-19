@@ -24,18 +24,21 @@ export default function BillItemInput({onSave, onCancel}: BillItemInputProps): R
         <div className={"border"}>
             <div className={"grid grid-cols-1 md:grid-cols-3 md:gap-3  rounded-lg p-3 gap-3"}>
                 <Input
+                    aria-label={"new-item-name"}
                     clearable
                     placeholder={"Name"}
                     onChange={(e: any) => setName(e.target.value)}
                 />
                 <div className={"flex gap-3 justify-between"}>
                     <Input
+                        aria-label={"new-item-price"}
                         type={"number"}
                         placeholder={"Price"}
                         labelLeft={"$"}
                         onChange={(e: any) => setPrice(parseFloat(e.target.value))}
                     />
                     <Input
+                        aria-label={"new-item-quantity"}
                         type={"number"}
                         placeholder={"Quantity"}
                         width={"100px"}
@@ -43,6 +46,7 @@ export default function BillItemInput({onSave, onCancel}: BillItemInputProps): R
                     />
                 </div>
                 <Input
+                    aria-label={"new-item-person"}
                     placeholder={"Person (coming soon)"}
                     disabled
                 />

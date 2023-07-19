@@ -8,10 +8,11 @@ import FeeRow from "./FeeRow.tsx";
 
 interface Props {
     fees: Fee[];
-    deleteFee: (feeId: number) => void;
+    deleteFee: (fee: Fee) => void;
+    updateFee: (fee: Fee, description: string, price: number) => void;
 }
 
-function FeesList({fees, deleteFee} : Props) {
+function FeesList({fees, deleteFee, updateFee} : Props) {
 
     return (
         <Table
@@ -30,10 +31,9 @@ function FeesList({fees, deleteFee} : Props) {
                 {fees.map((fee, index) => (
                     <FeeRow
                         key={index}
-                        id={fee.id}
-                        description={fee.description}
-                        price={fee.price}
+                        fee={fee}
                         deleteFee={deleteFee}
+                        updateFee={updateFee}
                     />
                 ))}
             </TableBody>
