@@ -1,5 +1,6 @@
 package com.splitter.bill;
 
+import com.splitter.fee.FeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,13 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class BillServiceTest {
 
     private BillService billService;
+    private FeeService feeService;
 
     @Autowired
     private BillRepository billRepository;
 
     @BeforeEach
     void setUp() {
-        billService = new BillService(billRepository);
+        billService = new BillService(billRepository, feeService);
     }
 
     @Test

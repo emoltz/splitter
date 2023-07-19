@@ -31,8 +31,8 @@ public class FeeServiceTest {
 
     @BeforeEach
     void setUp() {
-        billService = new BillService(billRepository);
         feeService = new FeeService(feeRepository, billRepository);
+        billService = new BillService(billRepository, feeService);
 
         ResponseEntity<Bill> newBill = billService.createBill(new NewBillRequest("Test Bill", "2023-01-01", 0.0));
         this.bill = newBill.getBody();
@@ -43,7 +43,9 @@ public class FeeServiceTest {
     @Test
     void testGetFeesByBillId() {
         List<Fee> feesList = feeService.getFeesByBillId(this.billId);
-        assertTrue(feesList.isEmpty());
+
+        // Tax and Tip should be automatically created on Bill creation
+        assertThat(feesList.size()).isEqualTo(2);
     }
 
     @Test
@@ -78,7 +80,7 @@ public class FeeServiceTest {
                 this.billId
         ));
         List<Fee> feesList = feeService.getFeesByBillId(this.billId);
-        assertThat(feesList.size()).isEqualTo(1);
+        assertThat(feesList.size()).isEqualTo(3);
         assertTrue(feesList.contains(updatedFee.getBody()));
         assertThat(feeService.findExistingFee(updatedFee.getBody().getId()).getDescription()).isEqualTo(newDescription);
         assertThat(billService.getBillById(this.billId).getTotal()).isEqualTo(newPrice);
@@ -95,7 +97,7 @@ public class FeeServiceTest {
         assertThat(billService.getBillById(this.billId).getTotal()).isEqualTo(22.50);
 
         feeService.deleteFee(newFee.getBody().getId());
-        assertThat(feeService.getFeesByBillId(this.billId).size()).isEqualTo(0);
+        assertThat(feeService.getFeesByBillId(this.billId).size()).isEqualTo(2);
         assertThat(billService.getBillById(this.billId).getTotal()).isEqualTo(0.0);
     }
 }
