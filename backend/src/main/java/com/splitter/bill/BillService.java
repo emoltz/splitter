@@ -1,5 +1,7 @@
 package com.splitter.bill;
 
+import com.splitter.fee.FeeService;
+import com.splitter.fee.NewFeeRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class BillService {
 
     private final BillRepository billRepository;
+    private final FeeService feeService;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
-    public BillService(BillRepository billRepository) {
+    public BillService(BillRepository billRepository, FeeService feeService) {
         this.billRepository = billRepository;
+        this.feeService = feeService;
     }
 
     public List<Bill> getBills() {
@@ -48,6 +52,11 @@ public class BillService {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.UNPROCESSABLE_ENTITY);
         }
+
+        // Automatically create Tax and Tip Fees
+        feeService.createFee(new NewFeeRequest("Tax", 0.0, bill.getId()));
+        feeService.createFee(new NewFeeRequest("Tip", 0.0, bill.getId()));
+
         return new ResponseEntity<>(bill, HttpStatus.CREATED);
     }
 

@@ -4,6 +4,8 @@ import com.splitter.bill.Bill;
 import com.splitter.bill.BillRepository;
 import com.splitter.bill.BillService;
 import com.splitter.bill.NewBillRequest;
+import com.splitter.fee.FeeRepository;
+import com.splitter.fee.FeeService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ public class ItemServiceTest {
 
     private BillService billService;
     private ItemService itemService;
+    private FeeService feeService;
     private Bill bill;
     private Integer billId;
 
@@ -31,9 +34,13 @@ public class ItemServiceTest {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private FeeRepository feeRepository;
+
     @BeforeEach
     void setUp() {
-        billService = new BillService(billRepository);
+        feeService = new FeeService(feeRepository, billRepository);
+        billService = new BillService(billRepository, feeService);
         itemService = new ItemService(itemRepository, billRepository);
 
         ResponseEntity<Bill> newBill = billService.createBill(new NewBillRequest("Test Bill", "2023-01-01", 0.0));
