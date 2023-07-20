@@ -1,11 +1,11 @@
 import {Modal} from '@nextui-org/react';
 import {Button, Typography, Stack} from '@mui/material';
-import {Bill, Fee} from "../../assets/interfaces";
+import {Bill, Item, Fee} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
-import {getItemsByBillId, createItem, NewItemRequest} from "../../api/billService.js";
+import {getItemsByBillId, createItem, NewItemRequest, deleteItem} from "../../api/billService.js";
 import {createFee, deleteFee, getFeesByBillId, NewFeeRequest, updateFee} from "../../api/feeService.tsx";
-import BillItemInput from './items/BillItem';
-import AddedItem from './items/AddedItem';
+import BillItemInput from './items/NewItemInput.tsx';
+import ItemRow from './items/ItemRow.tsx';
 import FeesList from "./fees/FeesList.tsx";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -77,6 +77,22 @@ export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: 
             })
             .catch(error => {
                 console.error('Error adding item: ', error);
+            })
+    }
+
+    const handleDeleteItem = (itemToRemove: Item) => {
+        const itemPrice = itemToRemove.price;
+        deleteItem(
+            itemToRemove.id,
+            bill.id
+        )
+            .then(() => {
+                setItems(prevItems => prevItems.filter(item => item.id !== itemToRemove.id));
+                setBillTotal(billTotal - itemPrice);
+                updateBillTotal(bill.id, billTotal - itemPrice);
+            })
+            .catch(error => {
+                console.error('Error deleteing item: ', error);
             })
     }
 
@@ -181,12 +197,12 @@ export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: 
                         </TableHead>
                         <TableBody>
                             {items.map((item, index) => (
-                                <AddedItem
+                                <ItemRow
                                     key={index}
+                                    item={item}
                                     number={index}
-                                    description={item.description}
                                     price={item.price}
-                                    quantity={item.quantity}
+                                    deleteItem={handleDeleteItem}
                                 />
                             ))}
                         </TableBody>
