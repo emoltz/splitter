@@ -66,8 +66,10 @@ function BillRow({bill, onDelete}: Props) {
                     type="button"
                     className="btn-close"
                     aria-label="Close"
-                    onClick={() => {
+                    onClick={(event:React.MouseEvent<HTMLButtonElement>) => {
+                        event.stopPropagation();
                         onDelete(bill.id);
+
                     }}
                 ></button>
             </Paper>
