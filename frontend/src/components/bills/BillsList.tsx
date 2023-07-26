@@ -23,7 +23,7 @@ function BillsList() {
 
     const fetchBills = () => {
         getBills().then(res => {
-            setBills(res.data);
+            setBills(res.data.reverse());
         })
     }
 
