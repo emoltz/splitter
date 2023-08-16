@@ -47,6 +47,10 @@ function App() {
         }
     ]
 
+    const containerHeight = {
+        height: "100vh",
+    };
+
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -57,7 +61,7 @@ function App() {
                             <NavBarMUI/>
 
 
-                            <div className="d-flex flex-column p-4 gap-4 py-md-5">
+                            <div className="d-flex flex-column p-4 gap-4 py-md-5" style={containerHeight}>
                                 <Router>
                                     <Routes>
                                         {routes.map((route, index) => (
