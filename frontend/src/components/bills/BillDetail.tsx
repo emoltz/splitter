@@ -2,7 +2,7 @@ import {Modal} from '@nextui-org/react';
 import {Button, Typography, Stack} from '@mui/material';
 import {Bill, Item, Fee} from "../../assets/interfaces";
 import {useEffect, useState} from "react";
-import {getItemsByBillId, createItem, NewItemRequest, deleteItem} from "../../api/billService.js";
+import {getItemsByBillId, createItem, NewItemRequest, deleteItem, updateItem} from "../../api/billService.js";
 import {createFee, deleteFee, getFeesByBillId, NewFeeRequest, updateFee} from "../../api/feeService.tsx";
 import BillItemInput from './items/NewItemInput.tsx';
 import ItemRow from './items/ItemRow.tsx';
@@ -77,6 +77,27 @@ export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: 
             })
             .catch(error => {
                 console.error('Error adding item: ', error);
+            })
+    }
+
+    const handleUpdateItem = (itemToUpdate: Item, description: string, price: number, quantity: number) => {
+        updateItem(
+            itemToUpdate.id,
+            new NewItemRequest(description, price, quantity, bill.id),
+            bill.id
+        )
+            .then(response => {
+                setItems(items.map(item => {
+                    if (item.id === itemToUpdate.id) {
+                        return { ...item, description: response.data.description, price: response.data.price, quantity: response.data.quantity};
+                    }
+                    return item;
+                }));
+                setBillTotal((billTotal-(itemToUpdate.price * itemToUpdate.quantity)) + (response.data.price * response.data.quantity));
+                updateBillTotal(bill.id, (billTotal-(itemToUpdate.price * itemToUpdate.quantity)) + (response.data.price * response.data.quantity));
+            })
+            .catch(error => {
+                console.error('Error updating fee: ', error);
             })
     }
 
@@ -203,6 +224,7 @@ export default function BillDetail({bill, bindings, isMobile, updateBillTotal}: 
                                     number={index}
                                     price={item.price}
                                     deleteItem={handleDeleteItem}
+                                    updateItem={handleUpdateItem}
                                 />
                             ))}
                         </TableBody>

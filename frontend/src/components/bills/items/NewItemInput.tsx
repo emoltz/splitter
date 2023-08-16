@@ -16,7 +16,6 @@ export default function BillItemInput({onSave, onCancel}: BillItemInputProps): R
     const [price, setPrice] = useState<string | number>(0);
     const [quantity, setQuantity] = useState<string | number>(0);
     const handleSaveClick = () => {
-        console.log(name, " | ", price, " | ", quantity)
         onSave(name, price, quantity);
     }
 
