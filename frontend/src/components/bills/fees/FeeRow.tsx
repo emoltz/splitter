@@ -20,7 +20,7 @@ function FeeRow({fee, deleteFee, updateFee}: Props) {
         setIsEditable(showEditInput);
     }
 
-    const handleSaveItem = (fee: Fee, description: string, price: number) => {
+    const handleSaveFee = (fee: Fee, description: string, price: number) => {
         updateFee(fee, description, price);
         handleUpdateButtonClick(false);
     }
@@ -49,7 +49,7 @@ function FeeRow({fee, deleteFee, updateFee}: Props) {
 
         <UpdateFeeInput
             fee={fee}
-            onSave={handleSaveItem}
+            onSave={handleSaveFee}
             onCancel={() => handleUpdateButtonClick(false)}
         />
         }
